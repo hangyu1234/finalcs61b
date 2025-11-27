@@ -47,6 +47,7 @@ public class LinkedListDeque<T> implements Iterable<T> {
         System.out.println();
     }
     public T removeFirst(){
+        if (sentinel.next==sentinel){return null;}
         T remove=sentinel.next.item;
         sentinel.next=sentinel.next.next;
         sentinel.next.last=sentinel;
@@ -54,6 +55,7 @@ public class LinkedListDeque<T> implements Iterable<T> {
         return remove;
     }
     public T removeLast(){
+        if (sentinel.next==sentinel){return null;}
         T remove=sentinel.last.item;
         sentinel.last=sentinel.last.last;
         sentinel.last.next=sentinel;
