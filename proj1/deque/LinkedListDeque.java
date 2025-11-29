@@ -63,6 +63,7 @@ public class LinkedListDeque<T> implements Iterable<T> {
         return remove;
     }
     public T get(int index){
+        if (index>=size){return null;}
         Node<T> toget=sentinel.next;
         while (index>0){
             toget=toget.next;
@@ -71,6 +72,7 @@ public class LinkedListDeque<T> implements Iterable<T> {
         return toget.item;
     }
     public T getRecursive(int index){
+        if (index>=size){return null;}
         return helpget(sentinel.next,index);
     }
     public T helpget (Node<T> node,int index){
