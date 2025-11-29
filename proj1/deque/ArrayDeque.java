@@ -5,28 +5,37 @@ import java.util.Iterator;
 public class ArrayDeque<T> implements Iterable<T>{
     private T[] items;
     private int sizeleft;
-    private int sizeright;
-    private int middle;
+    public int sizeright;
     public ArrayDeque(){
         sizeleft=0;
         sizeright=0;
         items=(T[]) new Object[8];
-        middle=items.length/2;
     }
     private void resize(int capacity){
         T[] a= (T[]) new Object[capacity];
-        System.arraycopy(items,middle-sizeleft,a,capacity/2-sizeleft,sizeleft+sizeright);
+        if (sizeleft<0){
+            System.arraycopy(items,-sizeleft-1,a,0,sizeleft+sizeright);
+        }
+        else if (sizeright<0){
+            System.arraycopy(items,items.length-sizeleft,a,0,sizeleft+sizeright);
+        }
+        else{
+            System.arraycopy(items,items.length-sizeleft,a,0,sizeleft);
+            System.arraycopy(items,0,a,sizeleft,sizeright);
+        }
         items=a;
-        middle=capacity/2;
+        int size=sizeleft+sizeright;
+        sizeleft=0;
+        sizeright=size;
     }
     public void addFirst(T x){
-        if (sizeleft+1>middle){resize((sizeleft+sizeright)*2);}
-        items[middle-sizeleft-1]=x;
+        if (sizeleft+sizeright>=items.length){resize((sizeleft+sizeright)*2);}
+        items[items.length-1-sizeleft]=x;
         sizeleft++;
     }
     public void addLast(T x){
-        if (middle+sizeright>=items.length){resize((sizeleft+sizeright)*2);}
-        items[middle+sizeright]=x;
+        if (sizeleft+sizeright>=items.length){resize((sizeleft+sizeright)*2);}
+        items[sizeright]=x;
         sizeright++;
     }
     public boolean isEmpty(){
@@ -36,39 +45,65 @@ public class ArrayDeque<T> implements Iterable<T>{
         return sizeleft+sizeright;
     }
     public void printDeque(){
-        for (int i=middle-sizeleft;i<middle+sizeright;i++){
+        for (int i=items.length-sizeleft;i<items.length;i++){
+            System.out.print(items[i]+" ");
+        }
+        for (int i=0;i<sizeright;i++){
             System.out.print(items[i]+" ");
         }
         System.out.println();
     }
     public T removeFirst(){
+        T returnitem;
         if (sizeleft+sizeright==0){return null;}
-        if ((middle>2*sizeleft)&&(middle+2*sizeright<items.length)){resize(middle);}
-        sizeleft-=1;
-        return items[middle-sizeleft-1];
+        if (sizeleft==0){
+            sizeleft--;
+            returnitem=items[0];
+            resize(items.length);
+        }
+        else{
+            returnitem=items[items.length-sizeleft];
+            sizeleft--;
+        }
+        if (4*(sizeleft+sizeright)<=items.length){resize(items.length/2);}
+        return returnitem;
     }
     public T removeLast(){
+        T returnitem;
         if (sizeleft+sizeright==0){return null;}
-        if ((middle>2*sizeleft)&&(middle+2*sizeright<items.length)){resize(middle);}
-        sizeright-=1;
-        return items[middle+sizeright];
+        if (sizeright==0){
+            sizeright--;
+            returnitem=items[items.length-1];
+            resize(items.length);
+        }
+        else{
+            returnitem=items[sizeright-1];
+            sizeright--;
+        }
+        if (4*(sizeleft+sizeright)<items.length){resize(items.length/2);}
+        return returnitem;
     }
     public T get(int index){
         if (index>=sizeleft+sizeright){return null;}
-        return items[middle-sizeleft+index];
+        if (index<=sizeleft){
+            return items[items.length-sizeleft+index];
+        }
+        else{return items[index-sizeleft-1];}
     }
     public Iterator<T> iterator(){
         return new ArrayDeque.ArrayIterator();
     }
     public class ArrayIterator implements Iterator<T>{
         public int wizpos;
-        public ArrayIterator(){wizpos=middle-sizeleft;}
+        public ArrayIterator(){wizpos=items.length-sizeleft;}
         public boolean hasNext(){
-            return wizpos<middle+sizeright;
+            if (wizpos>=items.length-sizeleft){return true;}
+            else {return wizpos<sizeright;}
         }
         public T next(){
             T returnItem=items[wizpos];
             wizpos++;
+            if (wizpos==items.length){wizpos=0;}
             return returnItem;
         }
         public void remove(){
@@ -80,12 +115,14 @@ public class ArrayDeque<T> implements Iterable<T>{
         if (o instanceof ArrayDeque){
             ArrayDeque<T> other = (ArrayDeque<T>) o;
             if (this.size()!=other.size()){return false;}
-            int i=this.middle-this.sizeleft;
-            int j=other.middle-other.sizeleft;
-            while (i<this.middle+this.sizeright&&j<other.middle+other.sizeright){
+            int i=this.items.length-this.sizeleft;
+            int j=other.items.length-other.sizeleft;
+            while ((i<this.sizeright||i>=this.items.length-sizeleft)&&(j<other.sizeright||j>=other.items.length-other.sizeleft)){
                 if (this.items[i]!=other.items[j]){return false;}
                 i++;
                 j++;
+                if (i==this.items.length){i=0;}
+                if (j==other.items.length){j=0;}
             }
             return true;
         }
