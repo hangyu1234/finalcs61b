@@ -14,7 +14,7 @@ public class ArrayDeque<T> implements Iterable<T>{
     private void resize(int capacity){
         T[] a= (T[]) new Object[capacity];
         if (sizeleft<0){
-            System.arraycopy(items,-sizeleft-1,a,0,sizeleft+sizeright);
+            System.arraycopy(items,-sizeleft,a,0,sizeleft+sizeright);
         }
         else if (sizeright<0){
             System.arraycopy(items,items.length-sizeleft,a,0,sizeleft+sizeright);
@@ -85,10 +85,10 @@ public class ArrayDeque<T> implements Iterable<T>{
     }
     public T get(int index){
         if (index>=sizeleft+sizeright){return null;}
-        if (index<=sizeleft){
+        if (index<sizeleft){
             return items[items.length-sizeleft+index];
         }
-        else{return items[index-sizeleft-1];}
+        else{return items[index-sizeleft];}
     }
     public Iterator<T> iterator(){
         return new ArrayDeque.ArrayIterator();
