@@ -2,134 +2,182 @@ package deque;
 
 import java.util.Iterator;
 
-public class ArrayDeque<T> implements Iterable<T>,Deque<T> {
+public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
     private T[] items;
     private int sizeleft;
-    public int sizeright;
-    public ArrayDeque(){
-        sizeleft=0;
-        sizeright=0;
-        items=(T[]) new Object[8];
+    private int sizeright;
+    public ArrayDeque() {
+        sizeleft = 0;
+        sizeright = 0;
+        items = (T[]) new Object[8];
     }
-    private void resize(int capacity){
-        T[] a= (T[]) new Object[capacity];
-        if (sizeleft<0){
-            System.arraycopy(items,-sizeleft,a,0,sizeleft+sizeright);
+    private void resize (int capacity) {
+        T[] a = (T[]) new Object[capacity];
+        if (sizeleft < 0) {
+            System.arraycopy(items, -sizeleft, a, 0, sizeleft + sizeright);
+        } else if (sizeright < 0) {
+            System.arraycopy(items, items.length - sizeleft, a, 0, sizeleft + sizeright);
+        } else {
+            System.arraycopy(items, items.length - sizeleft, a, 0, sizeleft);
+            System.arraycopy(items, 0, a, sizeleft, sizeright);
         }
-        else if (sizeright<0){
-            System.arraycopy(items,items.length-sizeleft,a,0,sizeleft+sizeright);
-        }
-        else{
-            System.arraycopy(items,items.length-sizeleft,a,0,sizeleft);
-            System.arraycopy(items,0,a,sizeleft,sizeright);
-        }
-        items=a;
-        int size=sizeleft+sizeright;
-        sizeleft=0;
-        sizeright=size;
+        items = a;
+        int size = sizeleft + sizeright;
+        sizeleft = 0;
+        sizeright = size;
     }
     @Override
-    public void addFirst(T x){
-        if (sizeleft+sizeright>=items.length){resize((sizeleft+sizeright)*2);}
-        items[items.length-1-sizeleft]=x;
+    public void addFirst(T x) {
+        if (sizeleft + sizeright >= items.length) {
+            resize((sizeleft + sizeright) * 2);
+        }
+        items[items.length - 1 - sizeleft] = x;
         sizeleft++;
     }
     @Override
-    public void addLast(T x){
-        if (sizeleft+sizeright>=items.length){resize((sizeleft+sizeright)*2);}
-        items[sizeright]=x;
+    public void addLast(T x) {
+        if (sizeleft + sizeright >= items.length) {
+            resize((sizeleft + sizeright) * 2);
+        }
+        items[sizeright] = x;
         sizeright++;
     }
     @Override
-    public int size(){
-        return sizeleft+sizeright;
+    public int size() {
+        return sizeleft + sizeright;
     }
     @Override
-    public void printDeque(){
-        for (int i=items.length-sizeleft;i<items.length;i++){
-            System.out.print(items[i]+" ");
+    public void printDeque() {
+        for (int i = items.length - sizeleft; i < items.length; i++) {
+            System.out.print(items[i] + " ");
         }
-        for (int i=0;i<sizeright;i++){
-            System.out.print(items[i]+" ");
+        for (int i = 0; i < sizeright; i++) {
+            System.out.print(items[i] + " ");
         }
         System.out.println();
     }
     @Override
-    public T removeFirst(){
+    public T removeFirst() {
         T returnitem;
-        if (sizeleft+sizeright==0){return null;}
-        if (sizeleft==0){
+        if (sizeleft + sizeright == 0) {
+            return null;
+        }
+        if (sizeleft == 0) {
             sizeleft--;
-            returnitem=items[0];
+            returnitem = items[0];
             resize(items.length);
-        }
-        else{
-            returnitem=items[items.length-sizeleft];
+        } else {
+            returnitem = items[items.length - sizeleft];
             sizeleft--;
         }
-        if (4*(sizeleft+sizeright)<=items.length){resize(items.length/2);}
+        if (4 * (sizeleft + sizeright) <= items.length) {
+            if (items.length>8) {
+                resize (items.length / 2);
+            }
+        }
         return returnitem;
     }
     @Override
-    public T removeLast(){
+    public T removeLast() {
         T returnitem;
-        if (sizeleft+sizeright==0){return null;}
-        if (sizeright==0){
+        if (sizeleft + sizeright == 0) {
+            return null;
+        }
+        if (sizeright == 0) {
             sizeright--;
-            returnitem=items[items.length-1];
+            returnitem = items[items.length - 1];
             resize(items.length);
-        }
-        else{
-            returnitem=items[sizeright-1];
+        } else {
+            returnitem = items[sizeright-1];
             sizeright--;
         }
-        if (4*(sizeleft+sizeright)<items.length){resize(items.length/2);}
+        if (4 * (sizeleft + sizeright) < items.length) {
+            if (items.length > 8) {
+                resize(items.length / 2);
+            }
+        }
         return returnitem;
     }
     @Override
-    public T get(int index){
-        if (index>=sizeleft+sizeright){return null;}
-        if (index<sizeleft){
-            return items[items.length-sizeleft+index];
+    public T get(int index) {
+        if (index >= sizeleft + sizeright) {
+            return null;
         }
-        else{return items[index-sizeleft];}
+        if (index < sizeleft) {
+            return items[items.length - sizeleft + index];
+        } else {
+            return items[index - sizeleft];
+        }
     }
-    public Iterator<T> iterator(){
+    public Iterator<T> iterator() {
         return new ArrayDeque.ArrayIterator();
     }
-    public class ArrayIterator implements Iterator<T>{
-        public int wizpos;
-        public ArrayIterator(){wizpos=items.length-sizeleft;}
-        public boolean hasNext(){
-            if (wizpos>=items.length-sizeleft){return true;}
-            else {return wizpos<sizeright;}
+    private class ArrayIterator implements Iterator<T> {
+        private int wizpos;
+        public ArrayIterator() {
+            if (sizeleft == 0) {
+                wizpos = 0;
+            } else {
+                wizpos = items.length - sizeleft;
+            }
         }
-        public T next(){
-            T returnItem=items[wizpos];
+        public boolean hasNext() {
+            if (wizpos >= items.length - sizeleft) {
+                return true;
+            } else {
+                return wizpos < sizeright;
+            }
+        }
+        public T next() {
+            T returnItem = items[wizpos];
             wizpos++;
-            if (wizpos==items.length){wizpos=0;}
+            if (wizpos == items.length) {
+                wizpos=0;
+            }
             return returnItem;
         }
-        public void remove(){
+        public void remove() {
             throw new UnsupportedOperationException("Remove operation is not supported");
         }
     }
-    public boolean equals(Object o){
-        if (this==o){return true;}
-        if (o instanceof ArrayDeque){
-            ArrayDeque<T> other = (ArrayDeque<T>) o;
-            if (this.size()!=other.size()){return false;}
-            int i=this.items.length-this.sizeleft;
-            int j=other.items.length-other.sizeleft;
-            while ((i<this.sizeright||i>=this.items.length-sizeleft)&&(j<other.sizeright||j>=other.items.length-other.sizeleft)){
-                if (this.items[i]!=other.items[j]){return false;}
-                i++;
-                j++;
-                if (i==this.items.length){i=0;}
-                if (j==other.items.length){j=0;}
-            }
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        else {return false;}
+        if (o instanceof ArrayDeque) {
+            ArrayDeque<T> other = (ArrayDeque<T>) o;
+            if (this.size() != other.size()) {
+                return false;
+            }
+            int i;
+            int j;
+            if (sizeleft == 0) {
+                i = 0;
+            } else {
+                i = this.items.length - this.sizeleft;
+            }
+            if (sizeright == 0) {
+                j = 0;
+            } else {
+                j = other.items.length - other.sizeleft;
+            }
+            while ((i < this.sizeright || i >= this.items.length - sizeleft) && (j < other.sizeright || j >= other.items.length - other.sizeleft)) {
+                if (!this.items[i].equals(other.items[j])) {
+                    return false;
+                }
+                i++;
+                j++;
+                if (i == this.items.length) {
+                    i=0;
+                }
+                if (j == other.items.length) {
+                    j=0;
+                }
+            }
+            return true;
+        } else {
+            return false;
+        }
     }
 }
+
