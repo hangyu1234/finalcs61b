@@ -2,7 +2,7 @@ package deque;
 
 import java.util.Iterator;
 
-public class ArrayDeque<T> implements Iterable<T> {
+public class ArrayDeque<T> implements Iterable<T>,Deque<T> {
     private T[] items;
     private int sizeleft;
     public int sizeright;
@@ -28,22 +28,23 @@ public class ArrayDeque<T> implements Iterable<T> {
         sizeleft=0;
         sizeright=size;
     }
+    @Override
     public void addFirst(T x){
         if (sizeleft+sizeright>=items.length){resize((sizeleft+sizeright)*2);}
         items[items.length-1-sizeleft]=x;
         sizeleft++;
     }
+    @Override
     public void addLast(T x){
         if (sizeleft+sizeright>=items.length){resize((sizeleft+sizeright)*2);}
         items[sizeright]=x;
         sizeright++;
     }
-    public boolean isEmpty(){
-        return (sizeleft+sizeright)==0;
-    }
+    @Override
     public int size(){
         return sizeleft+sizeright;
     }
+    @Override
     public void printDeque(){
         for (int i=items.length-sizeleft;i<items.length;i++){
             System.out.print(items[i]+" ");
@@ -53,6 +54,7 @@ public class ArrayDeque<T> implements Iterable<T> {
         }
         System.out.println();
     }
+    @Override
     public T removeFirst(){
         T returnitem;
         if (sizeleft+sizeright==0){return null;}
@@ -68,6 +70,7 @@ public class ArrayDeque<T> implements Iterable<T> {
         if (4*(sizeleft+sizeright)<=items.length){resize(items.length/2);}
         return returnitem;
     }
+    @Override
     public T removeLast(){
         T returnitem;
         if (sizeleft+sizeright==0){return null;}
@@ -83,6 +86,7 @@ public class ArrayDeque<T> implements Iterable<T> {
         if (4*(sizeleft+sizeright)<items.length){resize(items.length/2);}
         return returnitem;
     }
+    @Override
     public T get(int index){
         if (index>=sizeleft+sizeright){return null;}
         if (index<sizeleft){

@@ -1,6 +1,6 @@
 package deque;
 import java.util.Iterator;
-public class LinkedListDeque<T> implements Iterable<T> {
+public class LinkedListDeque<T> implements Iterable<T>,Deque<T>{
     private static class Node<T> {
         public T item;
         public Node<T> next;
@@ -20,24 +20,25 @@ public class LinkedListDeque<T> implements Iterable<T> {
         sentinel.last= sentinel;
         size=0;
     }
+    @Override
     public void addFirst(T x){
         size+=1;
         Node<T> add=new Node<T>(sentinel, x, this.sentinel.next);
         this.sentinel.next.last=add;
         sentinel.next=add;
     }
+    @Override
     public void addLast(T x){
         size+=1;
         Node<T> add=new Node<T>(this.sentinel.last,x,sentinel);
         this.sentinel.last.next=add;
         this.sentinel.last=add;
     }
-    public boolean isEmpty(){
-        return this.size==0;
-    }
+    @Override
     public int size(){
         return this.size;
     }
+    @Override
     public void printDeque(){
         Node<T> first=this.sentinel.next;
         while (first!=sentinel){
@@ -46,6 +47,7 @@ public class LinkedListDeque<T> implements Iterable<T> {
         }
         System.out.println();
     }
+    @Override
     public T removeFirst(){
         if (sentinel.next==sentinel){return null;}
         T remove=sentinel.next.item;
@@ -54,6 +56,7 @@ public class LinkedListDeque<T> implements Iterable<T> {
         size--;
         return remove;
     }
+    @Override
     public T removeLast(){
         if (sentinel.next==sentinel){return null;}
         T remove=sentinel.last.item;
@@ -62,6 +65,7 @@ public class LinkedListDeque<T> implements Iterable<T> {
         size--;
         return remove;
     }
+    @Override
     public T get(int index){
         if (index>=size){return null;}
         Node<T> toget=sentinel.next;
