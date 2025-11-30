@@ -11,7 +11,7 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
         sizeright = 0;
         items = (T[]) new Object[8];
     }
-    private void resize (int capacity) {
+    private void resize(int capacity) {
         T[] a = (T[]) new Object[capacity];
         if (sizeleft < 0) {
             System.arraycopy(items, -sizeleft, a, 0, sizeleft + sizeright);
@@ -71,8 +71,8 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
             sizeleft--;
         }
         if (4 * (sizeleft + sizeright) <= items.length) {
-            if (items.length>8) {
-                resize (items.length / 2);
+            if (items.length > 8) {
+                resize(items.length / 2);
             }
         }
         return returnitem;
@@ -88,7 +88,7 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
             returnitem = items[items.length - 1];
             resize(items.length);
         } else {
-            returnitem = items[sizeright-1];
+            returnitem = items[sizeright - 1];
             sizeright--;
         }
         if (4 * (sizeleft + sizeright) < items.length) {
@@ -114,7 +114,7 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
     }
     private class ArrayIterator implements Iterator<T> {
         private int wizpos;
-        public ArrayIterator() {
+        ArrayIterator() {
             if (sizeleft == 0) {
                 wizpos = 0;
             } else {
@@ -132,7 +132,7 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
             T returnItem = items[wizpos];
             wizpos++;
             if (wizpos == items.length) {
-                wizpos=0;
+                wizpos = 0;
             }
             return returnItem;
         }
@@ -144,34 +144,14 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
         if (this == o) {
             return true;
         }
-        if (o instanceof ArrayDeque) {
-            ArrayDeque<T> other = (ArrayDeque<T>) o;
+        if (o instanceof Deque) {
+            Deque<T> other = (Deque<T>) o;
             if (this.size() != other.size()) {
                 return false;
             }
-            int i;
-            int j;
-            if (sizeleft == 0) {
-                i = 0;
-            } else {
-                i = this.items.length - this.sizeleft;
-            }
-            if (sizeright == 0) {
-                j = 0;
-            } else {
-                j = other.items.length - other.sizeleft;
-            }
-            while ((i < this.sizeright || i >= this.items.length - sizeleft) && (j < other.sizeright || j >= other.items.length - other.sizeleft)) {
-                if (!this.items[i].equals(other.items[j])) {
+            for (int i = 0; i < this.size(); i++) {
+                if (!this.get(i).equals(other.get(i))) {
                     return false;
-                }
-                i++;
-                j++;
-                if (i == this.items.length) {
-                    i=0;
-                }
-                if (j == other.items.length) {
-                    j=0;
                 }
             }
             return true;

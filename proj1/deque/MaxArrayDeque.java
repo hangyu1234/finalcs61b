@@ -8,7 +8,7 @@ public class MaxArrayDeque<T> extends ArrayDeque<T> {
     public T max() {
         return max(comparator);
     }
-    public T max(Comparator<T> c){
+    public T max(Comparator<T> c) {
         if (this.size() == 0) {
             return null;
         } else {

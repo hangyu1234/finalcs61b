@@ -1,6 +1,5 @@
 package gh2;
 
-// TODO: uncomment the following import once you're ready to start this portion
 import deque.Deque;
 import deque.LinkedListDeque;
 
@@ -34,7 +33,7 @@ public class GuitarString {
         //       are different from each other. It means you should repeatedly call
         //       Math.random() - 0.5 to generate new random numbers for each array index.
         int i = 0;
-        while(true) {
+        while (true) {
             buffer.removeLast();
             i++;
             if (buffer.isEmpty()) {
