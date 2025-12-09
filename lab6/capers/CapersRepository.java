@@ -43,7 +43,7 @@ public class CapersRepository {
      */
     public static void writeStory(String text) {
         // TODO
-        File story = join(CAPERS_FOLDER, "story.txt");
+        File story = join(CAPERS_FOLDER, "story");
         if (story.exists()) {
             text = readContentsAsString(story) + "\n" + text;
         }
