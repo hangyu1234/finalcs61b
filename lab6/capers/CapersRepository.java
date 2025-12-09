@@ -18,7 +18,7 @@ public class CapersRepository {
     static final File CWD = new File(System.getProperty("user.dir"));
 
     /** Main metadata folder. */
-    static final File CAPERS_FOLDER = new File(".capers"); // TODO Hint: look at the `join`
+    static final File CAPERS_FOLDER = join(CWD, ".capers"); // TODO Hint: look at the `join`
                                             //      function in Utils
 
     /**
@@ -43,7 +43,7 @@ public class CapersRepository {
      */
     public static void writeStory(String text) {
         // TODO
-        File story = join(CAPERS_FOLDER, "story");
+        File story = join(CAPERS_FOLDER, "story.txt");
         if (story.exists()) {
             text = readContentsAsString(story) + "\n" + text;
         }
