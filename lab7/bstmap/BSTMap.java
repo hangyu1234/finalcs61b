@@ -108,7 +108,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
         addset(keys, root);
         return keys;
     }
-    public void addset(Set<K> keys, BSTNode p) {
+    private void addset(Set<K> keys, BSTNode p) {
         if (p.left == null && p.right == null) {
             keys.add(p.key);
         } else if (p.left == null) {
@@ -201,7 +201,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
     public void printInOrder() {
         printall(root);
     }
-    public void printall(BSTNode p) {
+    private void printall(BSTNode p) {
         if (p.left == null && p.right == null) {
             System.out.print(p.value);
         } else if (p.left == null) {
